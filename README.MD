@@ -1,108 +1,36 @@
-# soup\_scraper\_local — README (.env 版)
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-GitHub の Issues を **CSV にエクスポート**し、その CSV を **OpenAI で日本語翻訳した CSV** に変換するツール群です。環境変数は `.env` から読み込みます。
+## Getting Started
 
----
+First, run the development server:
 
-## 構成
-
-* `src/issues.ts` … GitHub → CSV ライブラリ（Effect/TS, 純粋＋モナディック）
-* `src/run.ts` … 取得＆CSV保存の実行用スクリプト（任意名）
-* `src/csv-translate.ts` … CSV → 日本語翻訳 CSV の CLI
-* `issues.csv` / `issues_ja.csv` … 出力例
-
----
-
-## 必要要件
-
-* Node.js **18+**（推奨 20+）
-* 依存パッケージ
-
-  ```bash
-  npm i effect openai
-  npm i -D tsx typescript @types/node csv-parse dotenv
-  ```
-
-
----
-
-## .env の用意
-
-プロジェクト直下に `.env` を作成：
-
-```
-GH_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxxxxxxx
-OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxx
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## 実行
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-### 1) GitHub Issues → CSV（src/run.ts）
-PowerShell 実行例
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-```powershell
-# 事前に .env をプロジェクト直下へ
-npx tsx .\src\run.ts --owner vercel --repo next.js --wantedN 200 --labels "bug" --version v14 --out .\issues.csv --bom                  
-# → issues.csv を生成
-```
+## Learn More
 
-引数
+To learn more about Next.js, take a look at the following resources:
 
---owner（必須）: GitHub リポジトリのオーナー（例: vercel）
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
---repo（必須）: リポジトリ名（例: next.js）
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
---wantedN : 取得件数（既定: 200、Search API 上限 1000）
+## Deploy on Vercel
 
---labels : カンマ区切りのラベル（例: "bug,good first issue"）
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
---version : 任意のキーワード（例: v14）
-
---soup : CSV列 soupId に入る値（既定: S1）
-
---project : CSV列 projectId に入る値（既定: P1）
-
---out : 出力 CSV パス（既定: ./issues.csv）
-
---lf : 改行を LF に（既定は CRLF）
-
---bom : UTF-8 BOM を付与（Excel 互換）
-
-出力 CSV の列: soupId,projectId,title,body
-
-
----
-
-### 2) CSV → 日本語翻訳 CSV（src/csv-translate.ts）
-PowerShell 実行例
-```powershell
-npx tsx .\src\csv-translate.ts --in .\issues.csv --out .\issues_ja.csv --bom --concurrency 5
-```
-
-引数
-
---in, -i（必須）: 入力 CSV パス
-
---out, -o（必須）: 出力 CSV パス
-
---concurrency, -c : 並列翻訳数（既定: 5）
-
---model, -m : OpenAI モデル（既定: gpt-4o-mini）
-
---temp, -t : 温度（既定: 0.2）
-
---newline : lf / crlf（既定: crlf）
-
---bom : UTF-8 BOM 付与（フラグ）
-
-入力 CSV の想定列: soupId,projectId,title,body
-title/body がない場合、フォールバックとして summary/first_comment を参照します。
-出力 CSV の列: 既存列 + titleJa,bodyJa
-
-## 入力／出力 CSV の仕様
-
-* 入力：既定は `soupId,projectId,title,body` を想定。足りない場合は `summary` / `first_comment` を自動フォールバック。
-* 出力：**元の列 + `titleJa, bodyJa`** を追加。RFC4180 準拠のエスケープ、CRLF、BOM（任意）。
-
-
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
